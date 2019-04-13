@@ -33,6 +33,8 @@ defmodule SitsenseServer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:calendar, "~> 0.17.5"},
+      {:httpoison, "~> 1.4"},
       {:phoenix, "~> 1.4.3"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:phoenix_pubsub, "~> 1.1"},
