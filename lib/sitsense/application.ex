@@ -10,22 +10,30 @@ defmodule Sitsense.Application do
   def start(_type, _args) do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Sitsense.Supervisor]
+    opts = [strategy: :rest_for_one, name: Sitsense.Supervisor]
     Supervisor.start_link(children(@target), opts)
   end
 
   # List all child processes to be supervised
   def children(:host) do
-    [
-      # Starts a worker by calling: Sitsense.Worker.start_link(arg)
-      # {Sitsense.Worker, arg},
-    ]
+    common_children() ++
+      [
+        # Starts a worker by calling: Sitsense.Worker.start_link(arg)
+        # {Sitsense.Worker, arg},
+      ]
   end
 
   def children(_target) do
+    common_children() ++
+      [
+        # Starts a worker by calling: Sitsense.Worker.start_link(arg)
+        # {Sitsense.Worker, arg},
+      ]
+  end
+
+  def common_children() do
     [
-      # Starts a worker by calling: Sitsense.Worker.start_link(arg)
-      # {Sitsense.Worker, arg},
+      {Sitsense.DistanceSensor, []}
     ]
   end
 end

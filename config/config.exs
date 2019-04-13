@@ -10,11 +10,6 @@ use Mix.Config
 
 config :nerves, :firmware, rootfs_overlay: "rootfs_overlay"
 
-# GPIO4, number 7
-config :sitsense, trig_pin: 4
-# GPIO17, number 11
-config :sitsense, echo_pin: 17
-
 # Use shoehorn to start the main application. See the shoehorn
 # docs for separating out critical OTP applications such as those
 # involved with firmware updates.
