@@ -42,6 +42,8 @@ defmodule SitsenseServerWeb do
       import SitsenseServerWeb.ErrorHelpers
       import SitsenseServerWeb.Gettext
       alias SitsenseServerWeb.Router.Helpers, as: Routes
+
+      import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
     end
   end
 
@@ -50,6 +52,8 @@ defmodule SitsenseServerWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+
+      import Phoenix.LiveView.Router
     end
   end
 

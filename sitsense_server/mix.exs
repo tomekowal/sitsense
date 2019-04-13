@@ -34,6 +34,7 @@ defmodule SitsenseServer.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.4.3"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},

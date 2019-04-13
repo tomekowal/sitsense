@@ -15,7 +15,8 @@ config :sitsense_server, SitsenseServerWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "obEb50gM7DSOSLl25E7C9j8xj9NjPo7HOYn/CgMIozs89lCNQS5ujVnIqiYrLqZC",
   render_errors: [view: SitsenseServerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: SitsenseServer.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: SitsenseServer.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [signing_salt: "ThwRhGEG2718LcA7/j+fHST8DN+wNCF0"]
 
 # Configures Elixir's Logger
 config :logger, :console,

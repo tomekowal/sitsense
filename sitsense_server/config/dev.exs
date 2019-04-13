@@ -52,7 +52,8 @@ config :sitsense_server, SitsenseServerWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/sitsense_server_web/{live,views}/.*(ex)$",
-      ~r"lib/sitsense_server_web/templates/.*(eex)$"
+      ~r"lib/sitsense_server_web/templates/.*(eex)$",
+      ~r{lib/sitsense_server_web/live/.*(ex)$}
     ]
   ]
 
