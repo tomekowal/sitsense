@@ -57,9 +57,8 @@ defmodule SitsenseServerWeb.SitsenseView do
     assign(socket, time: time)
   end
 
-  defp update_distance(%{assigns: %{val: val}} = socket) do
+  defp update_distance(%{assigns: %{val: val, mode: mode}} = socket) do
     new_val = SitsenseServer.distance_from_device()
-    IO.inspect(new_val)
 
     new_val =
       if new_val > 2000 do
@@ -70,14 +69,18 @@ defmodule SitsenseServerWeb.SitsenseView do
 
     new_val = if abs(new_val - val) < 1, do: val, else: new_val
 
-    mode =
+    new_mode =
       if new_val > 40 && new_val < 60 do
         :cooling
       else
         :heating
       end
 
-    assign(socket, val: new_val, mode: mode)
+    if mode == :cooling && new_mode == :heating do
+      SitsenseServerWeb.Endpoint.broadcast("sitsense:notifications", "notification", %{})
+    end
+
+    assign(socket, val: new_val, mode: new_mode)
   end
 
   defp update_distance(socket) do
