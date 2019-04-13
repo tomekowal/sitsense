@@ -4,5 +4,9 @@ defmodule Sitsense do
   """
   alias Sitsense.DistanceSensor
 
-  defdelegate distance(), to: DistanceSensor, as: :current_distance
+  if Mix.target() != :host do
+    defdelegate distance(), to: DistanceSensor, as: :current_distance
+  else
+    def distance(), do: 20.0
+  end
 end

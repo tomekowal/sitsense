@@ -28,12 +28,13 @@ defmodule Sitsense.Application do
       [
         # Starts a worker by calling: Sitsense.Worker.start_link(arg)
         # {Sitsense.Worker, arg},
+        {Sitsense.DistanceSensor, []}
       ]
   end
 
   def common_children() do
     [
-      {Sitsense.DistanceSensor, []}
+      SitsenseWeb.Endpoint
     ]
   end
 end
