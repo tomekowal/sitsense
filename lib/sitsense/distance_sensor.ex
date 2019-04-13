@@ -20,7 +20,8 @@ defmodule Sitsense.DistanceSensor do
   end
 
   def current_distance() do
-    GenServer.call(__MODULE__, :distance)
+    {:ok, distance} = GenServer.call(__MODULE__, :distance)
+    distance
   end
 
   def init(:ok) do

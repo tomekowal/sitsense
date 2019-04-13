@@ -27,7 +27,7 @@ defmodule Sitsense.MixProject do
   def application do
     [
       mod: {Sitsense.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :eex]
     ]
   end
 
