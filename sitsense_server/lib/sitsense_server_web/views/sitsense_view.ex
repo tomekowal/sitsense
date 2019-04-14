@@ -2,6 +2,7 @@ defmodule SitsenseServerWeb.SitsenseView do
   use Phoenix.LiveView
   import Calendar.Strftime
   @update_every_ms 200
+  @smoothing_factor 0.3
 
   def render(assigns) do
     ~L"""
@@ -68,13 +69,13 @@ defmodule SitsenseServerWeb.SitsenseView do
   end
 
   defp update_distance(%{assigns: %{val: val}} = socket) do
-    new_val = SitsenseServer.distance_from_device()
+    new_val = SitsenseServer.distance_from_device() || val
 
     new_val =
-      if new_val > 2000 do
+      if new_val > 150 do
         val
       else
-        trunc((val + 0.2 * new_val) / 1.2)
+        trunc((val + @smoothing_factor * new_val) / (1.0 + @smoothing_factor))
       end
 
     new_val = if abs(new_val - val) < 1, do: val, else: new_val
@@ -83,8 +84,7 @@ defmodule SitsenseServerWeb.SitsenseView do
   end
 
   defp update_distance(socket) do
-    val = SitsenseServer.distance_from_device()
-    assign(socket, val: val)
+    assign(socket, val: 50)
   end
 
   defp update_mode(%{assigns: %{val: val}} = socket) do

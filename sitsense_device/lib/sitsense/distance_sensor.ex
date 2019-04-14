@@ -75,7 +75,7 @@ defmodule Sitsense.DistanceSensor do
   end
 
   defp calculate_distance(_, _) do
-    :not_caculated
+    :not_calculated
   end
 
   # set low for two seconds to give it time to breathe
