@@ -23,16 +23,17 @@ defmodule SitsenseServerWeb.SitsenseView do
 
   def mount(_session, socket) do
     if connected?(socket), do: Process.send_after(self(), :tick, @update_every_ms)
-    val = SitsenseServer.distance_from_device()
-    {:ok, assign(socket, val: val, mode: :cooling, time: :calendar.local_time())}
+
+    socket
+    |> update_assigns
+    |> ok
   end
 
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, @update_every_ms)
 
     socket
-    |> update_time
-    |> update_distance
+    |> update_assigns
     |> noreply
   end
 
@@ -52,12 +53,21 @@ defmodule SitsenseServerWeb.SitsenseView do
      end)}
   end
 
+  defp update_assigns(socket) do
+    socket
+    |> update_time
+    |> update_distance
+    |> update_mode
+    |> update_mode_counter
+    |> maybe_send_notification
+  end
+
   defp update_time(socket) do
     time = :calendar.local_time()
     assign(socket, time: time)
   end
 
-  defp update_distance(%{assigns: %{val: val, mode: mode}} = socket) do
+  defp update_distance(%{assigns: %{val: val}} = socket) do
     new_val = SitsenseServer.distance_from_device()
 
     new_val =
@@ -69,25 +79,57 @@ defmodule SitsenseServerWeb.SitsenseView do
 
     new_val = if abs(new_val - val) < 1, do: val, else: new_val
 
+    assign(socket, val: new_val)
+  end
+
+  defp update_distance(socket) do
+    val = SitsenseServer.distance_from_device()
+    assign(socket, val: val)
+  end
+
+  defp update_mode(%{assigns: %{val: val}} = socket) do
     new_mode =
-      if new_val > 40 && new_val < 60 do
+      if val > 40 && val < 60 do
         :cooling
       else
         :heating
       end
 
-    if mode == :cooling && new_mode == :heating do
+    assign(socket, mode: new_mode)
+  end
+
+  defp update_mode(socket) do
+    assign(socket, mode: :cooling)
+  end
+
+  defp update_mode_counter(%{assigns: %{mode: mode, counter: _}} = socket) do
+    case mode do
+      :heating -> update(socket, :counter, &(&1 + 1))
+      :cooling -> assign(socket, :counter, 0)
+    end
+  end
+
+  defp update_mode_counter(socket) do
+    assign(socket, :counter, 0)
+  end
+
+  defp maybe_send_notification(%{assigns: %{counter: counter}} = socket) do
+    if counter == 10 do
       SitsenseServerWeb.Endpoint.broadcast("sitsense:notifications", "notification", %{})
     end
 
-    assign(socket, val: new_val, mode: new_mode)
+    socket
   end
 
-  defp update_distance(socket) do
+  defp maybe_send_notification(socket) do
     socket
   end
 
   defp noreply(socket) do
     {:noreply, socket}
+  end
+
+  defp ok(socket) do
+    {:ok, socket}
   end
 end
